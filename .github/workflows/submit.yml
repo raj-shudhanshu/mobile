@@ -1,7 +1,17 @@
-name: Build and Submit Beta Track
+name: Build and Submit Beta Track for Android
 
 on:
   workflow_dispatch:
+    input:
+      platform:
+        description: "Select the platform to build and submit"
+        required: true
+        default: "android"
+        type: choice
+        options:
+          - all
+          - android
+          - ios
 
 jobs:
   build:
@@ -27,7 +37,7 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Cache node_modules
+      - name: Cache Dependencies
         uses: actions/cache@v4
         with:
           path: node_modules
@@ -42,25 +52,20 @@ jobs:
         run: |
           echo "${{ secrets.GOOGLE_SERVICE_KEY }}" | base64 --decode > ./google-services.json
 
-      - name: Update Version Code and Name
+      - name: Update Version Code
         run: |
           VERSION_CODE=$(jq '.expo.android.versionCode' app.json)
           NEW_VERSION_CODE=$((VERSION_CODE + 1))
-
-          # Update the version code and version name
           jq --argjson newVersionCode "$NEW_VERSION_CODE" \
             --arg newVersion "1.0.$NEW_VERSION_CODE" \
             '.expo.android.versionCode = $newVersionCode | .expo.version = $newVersion' \
             app.json > tmp.json && mv tmp.json app.json
 
-          # Display the updated app.json
-          cat app.json
-
-      - name: Commit code
+      - name: Commit Version Update
         run: |
           git commit -am "Upgrade build version" 
           git push origin
 
-      # - name: Build and Submit Android App
-      #   run: |
-      #     eas build --profile beta --platform android --non-interactive --auto-submit --no-wait --clear-cache
+      - name: Build and Submit Android App
+        run: |
+          eas build --profile beta --platform ${{ github.event.inputs.instance_name }} --non-interactive --auto-submit --no-wait --clear-cache

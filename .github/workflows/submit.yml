@@ -26,7 +26,9 @@ jobs:
         run: npm install
 
       - name: Add Google Service Key
-        run: echo "${{ secrets.GOOGLE_SERVICE_KEY }}" > ./google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICE_KEY }}" > ./google-services.json
+          echo "${{ secrets.GOOGLE_SERVICE_KEY }}"
 
       - name: Build and Submit Android App
         run: |

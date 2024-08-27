@@ -32,11 +32,7 @@ jobs:
 
       - name: Add Google Service Account Key
         run: |
-          echo "${{ secrets.GOOGLE_SERVICE_KEY }}" > ./google-services.json
-
-      - name: Validate Google Service Account Key
-        run: |
-          cat google-services.json
+          printf "%s" "${{ secrets.GOOGLE_SERVICE_KEY }}" > ./google-services.json
 
       - name: Push Code
         run: |

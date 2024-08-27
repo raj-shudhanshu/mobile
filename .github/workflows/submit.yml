@@ -15,20 +15,23 @@ jobs:
         with:
           node-version: 22.x
           cache: npm
-
+      
       - name: Setup Expo Application Services (EAS)
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Configure Git
-        run: |
-          git config --local user.email "shudhanshu.raj@amoga.io"
-          git config --local user.name "raj-shudhanshu"
-
       - name: Install Dependencies
         run: npm install
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Add Google Service Account Key
         run: |

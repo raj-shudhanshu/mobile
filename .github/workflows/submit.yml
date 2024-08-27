@@ -1,37 +1,33 @@
+name: Build and Submit Beta Track
+
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup repo
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
           cache: npm
 
-      - name: Setup EAS
+      - name: Setup Expo Application Services (EAS)
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Configure Git
-        run: |
-          git config --local user.email "shudhanshu.raj@amoga.io"
-          git config --local user.name "raj-shudhanshu"
-
-      - name: 📦 Install dependencies
+      - name: Install Dependencies
         run: npm install
 
       - name: Add Google Service Key
-        run: |
-          echo "${{ secrets.GOOGLE_SERVICE_KEY }}" > ./google-services.json
+        run: echo "${{ secrets.GOOGLE_SERVICE_KEY }}" > ./google-services.json
 
-      - name: Build app
-        run: eas build --profile beta --p android --no-wait --auto-submit --non-interactive --clear-cache
+      - name: Build and Submit Android App
+        run: |
+          eas build --profile beta --platform android --non-interactive --auto-submit --no-wait --clear-cache

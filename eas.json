@@ -12,13 +12,27 @@
       "developmentClient": true,
       "distribution": "internal"
     },
-    "beta": {}
+    "beta": {},
+    "alpha": {},
+    "production": {}
   },
   "submit": {
     "beta": {
       "android": {
         "serviceAccountKeyPath": "google-services.json",
         "track": "beta"
+      }
+    },
+    "alpha": {
+      "android": {
+        "serviceAccountKeyPath": "google-services.json",
+        "track": "alpha"
+      }
+    },
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "google-services.json",
+        "track": "production"
       }
     }
   }

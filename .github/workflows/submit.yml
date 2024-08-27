@@ -31,7 +31,7 @@ jobs:
 
       - name: Validate Google Service Account Key
         run: |
-          cat google-services.json | jq .  # Optionally validate the JSON
+          cat google-services.json | jq .
 
       - name: Build and Submit Android App
         run: |

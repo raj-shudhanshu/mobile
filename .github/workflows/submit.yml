@@ -22,6 +22,11 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: Configure Git
+        run: |
+          git config --local user.email "shudhanshu.raj@amoga.io"
+          git config --local user.name "raj-shudhanshu"
+
       - name: Install Dependencies
         run: npm install
 
@@ -32,10 +37,6 @@ jobs:
       - name: Validate Google Service Account Key
         run: |
           cat google-services.json
-      - name: Configure Git
-        run: |
-          git config --local user.email "shudhanshu.raj@amoga.io"
-          git config --local user.name "raj-shudhanshu"
 
       - name: Push Code
         run: |

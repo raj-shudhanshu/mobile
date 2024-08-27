@@ -30,6 +30,10 @@ jobs:
           echo "${{ secrets.GOOGLE_SERVICE_KEY }}"
           echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}" | jq . > ./google-services.json
 
+      - name: Show google-services.json
+        run: |
+          echo $(cat google-services.json)
+
       - name: Build and Submit Android App
         run: |
           eas build --profile beta --platform android --non-interactive --auto-submit --no-wait --clear-cache

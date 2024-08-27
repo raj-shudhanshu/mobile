@@ -1,4 +1,4 @@
-name: Build and Submit Beta Track for Android
+name: Build and Submit Beta Track 
 
 on:
   workflow_dispatch:

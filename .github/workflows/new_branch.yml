@@ -1,0 +1,92 @@
+name: Auto Commit Build workflow on New Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      namespace:
+        description: "Enter namespace"
+        required: true
+        type: string
+      instance_name:
+        description: "Enter Instance name"
+        required: true
+        type: string
+      app_name:
+        description: "Enter app name"
+        required: true
+        type: string
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  commit-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pipeline namespace - ${{github.event.inputs.namespace}}
+        run: echo ${{github.event.inputs.namespace}}
+
+      - name: Echo all
+        run: |
+          echo ${{github.event.inputs.namespace}}
+          echo ${{github.event.inputs.instance_name}}
+          echo ${{github.event.inputs.app_name}}
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "shudhanshu.raj@amoga.io"
+          git config --local user.name "raj-shudhanshu"
+
+      - name: Create New Branch from Main
+        run: |
+          git fetch origin main
+          git checkout main
+          git checkout -b ${{ github.event.inputs.instance_name }}
+          git push origin ${{ github.event.inputs.instance_name }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Cache npm cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: Update app.json
+        run: |
+          jq ".expo.name = \"${{ github.event.inputs.instance_name }}\" | \
+             .expo.slug = \"${{ github.event.inputs.instance_name }}\" | \
+             .expo.android.package = \"${{ github.event.inputs.namespace }}\" | \
+             .expo.ios.bundleIdentifier = \"${{ github.event.inputs.namespace }}\" | \
+             .expo.owner = \"${{ github.event.inputs.instance_name }}\"" app.json > app.temp.json
+              mv app.temp.json app.json
+
+      - name: Link project
+        run: |
+          eas init
+
+      - name: Build app
+        run: |
+          eas build --profile production --platform android
+
+      - name: Push code
+        run: |
+          git add .
+          git commit -m "Link project"
+          git push origin ${{ github.event.inputs.instance_name }}

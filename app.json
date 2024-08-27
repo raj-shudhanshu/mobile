@@ -22,6 +22,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "owner": "shudhanshuraj",
+    "extra": {
+      "eas": {
+        "projectId": "7a194edb-2613-4a37-a9d2-7cf8c6751b3d"
+      }
     }
   }
 }

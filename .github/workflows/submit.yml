@@ -27,8 +27,9 @@ jobs:
 
       - name: Add Google Service Key
         run: |
-          echo "${{ secrets.GOOGLE_SERVICE_KEY }}" > ./google-services.json
           echo "${{ secrets.GOOGLE_SERVICE_KEY }}"
+          echo "${{ secrets.GOOGLE_SERVICE_KEY }}" | base64 --decode
+          echo "${{ secrets.GOOGLE_SERVICE_KEY }}" > ./google-services.json
 
       - name: Build and Submit Android App
         run: |

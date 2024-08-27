@@ -2,7 +2,7 @@ name: Build and Submit Beta Track
 
 on:
   workflow_dispatch:
-    input:
+    inputs:
       platform:
         description: "Select the platform to build and submit"
         required: true

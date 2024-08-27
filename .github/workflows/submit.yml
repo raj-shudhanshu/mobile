@@ -1,4 +1,4 @@
-name: Build and Submit Beta Track 
+name: Build and Submit Beta Track
 
 on:
   workflow_dispatch:
@@ -68,4 +68,4 @@ jobs:
 
       - name: Build and Submit Android App
         run: |
-          eas build --profile beta --platform ${{ github.event.inputs.instance_name }} --non-interactive --auto-submit --no-wait --clear-cache
+          eas build --profile beta --platform ${{ github.event.inputs.platform }} --non-interactive --auto-submit --no-wait --clear-cache

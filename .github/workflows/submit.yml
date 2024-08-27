@@ -46,17 +46,21 @@ jobs:
         run: |
           VERSION_CODE=$(jq '.expo.android.versionCode' app.json)
           NEW_VERSION_CODE=$((VERSION_CODE + 1))
-          jq --argjson newVersionCode "$NEW_VERSION_CODE" \
-            '.expo.android.versionCode = $newVersionCode | .expo.version = "1.0.$newVersionCode"' \
-            app.json > tmp.json && mv tmp.json app.json
-          cat app.json
 
+          # Update the version code and version name
+          jq --argjson newVersionCode "$NEW_VERSION_CODE" \
+            --arg newVersion "1.0.$NEW_VERSION_CODE" \
+            '.expo.android.versionCode = $newVersionCode | .expo.version = $newVersion' \
+            app.json > tmp.json && mv tmp.json app.json
+
+          # Display the updated app.json
+          cat app.json
 
       - name: Commit code
         run: |
           git commit -am "Upgrade build version" 
           git push origin
 
-      - name: Build and Submit Android App
-        run: |
-          eas build --profile beta --platform android --non-interactive --auto-submit --no-wait --clear-cache
+      # - name: Build and Submit Android App
+      #   run: |
+      #     eas build --profile beta --platform android --non-interactive --auto-submit --no-wait --clear-cache

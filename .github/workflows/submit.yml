@@ -15,7 +15,12 @@ jobs:
         with:
           node-version: 22.x
           cache: npm
-      
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "shudhanshu.raj@amoga.io"
+          git config --local user.name "raj-shudhanshu"
+
       - name: Setup Expo Application Services (EAS)
         uses: expo/expo-github-action@v8
         with:
@@ -36,6 +41,19 @@ jobs:
       - name: Add Google Service Account Key
         run: |
           echo "${{ secrets.GOOGLE_SERVICE_KEY }}" | base64 --decode > ./google-services.json
+      - name: Update Version Code and Name
+        run: |
+          VERSION_CODE=$(jq '.expo.android.versionCode' app.json)
+          NEW_VERSION_CODE=$((VERSION_CODE + 1))
+          jq --argjson newVersionCode "$NEW_VERSION_CODE" \
+            '.expo.android.versionCode = $newVersionCode | .expo.version = "1.0.$newVersionCode"' \
+            app.json > tmp.json && mv tmp.json app.json
+          cat app.json
+
+      - name: Commit code
+        run: |
+          git commit -am "Upgrade build version" 
+          git push origin
 
       - name: Build and Submit Android App
         run: |

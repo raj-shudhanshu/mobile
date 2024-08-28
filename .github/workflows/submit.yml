@@ -77,4 +77,4 @@ jobs:
 
       - name: Build and Submit Android App
         run: |
-          eas build --profile ${{ github.event.inputs.track } --platform ${{ github.event.inputs.platform }} --non-interactive --auto-submit --no-wait --clear-cache
+          eas build --profile ${{ github.event.inputs.track }} --platform ${{ github.event.inputs.platform }} --non-interactive --auto-submit --no-wait --clear-cache

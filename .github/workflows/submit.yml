@@ -12,7 +12,7 @@ on:
           - all
           - android
           - ios
-      platform:
+      track:
         description: "Select the track submit"
         required: true
         default: "beta"
